@@ -1,0 +1,109 @@
+<div class="app-container">
+  <div class="app-header" *ngIf="gameStarted">
+    <div class="header-copy">
+      <h1>Dhumbal Card Room</h1>
+      <p class="header-subtitle">Classic Nepali knock-card strategy, table-ready</p>
+      <div class="lan-game-code" *ngIf="showLanGameCode">
+        <span>Game Code: {{ displayedGameCode }}</span>
+        <button type="button" class="copy-button" (click)="copyGameCode()">
+          {{ gameCodeCopied ? 'Copied' : 'Copy' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="header-actions" *ngIf="gameStarted">
+      <button type="button" class="header-button" (click)="closeCurrentGame()" [disabled]="isClosingGame">
+        {{ isHostPlayer && gameState?.mode === 'lan' ? (isClosingGame ? 'Closing Room...' : 'Close Room') : 'Main Menu' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <app-game-setup *ngIf="!gameStarted" (gameCreated)="onGameCreated($event)"></app-game-setup>
+
+    <div *ngIf="isInLobby && gameState" class="lobby-shell">
+      <div class="lobby-card">
+        <div class="lobby-heading">
+          <div>
+            <h2>Lobby</h2>
+            <p>{{ joinedPlayerCount }}/{{ totalPlayerCount }} players connected</p>
+          </div>
+          <div class="lobby-code-pill">
+            <span class="pill-label">Share Code</span>
+            <strong>{{ displayedGameCode }}</strong>
+          </div>
+        </div>
+
+        <div class="lobby-seats">
+          <div *ngFor="let player of gameState.players" class="lobby-seat" [class.joined]="isPlayerJoined(player.id)">
+            <div>
+              <div class="seat-name">
+                {{ player.name }}
+                <span *ngIf="player.id === playerId" class="seat-badge">You</span>
+                <span *ngIf="player.id === gameState.hostPlayerId" class="seat-badge host">Host</span>
+              </div>
+              <div class="seat-status">{{ isPlayerJoined(player.id) ? 'Connected' : 'Waiting for player...' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lobby-actions">
+          <button
+            *ngIf="isHostPlayer"
+            type="button"
+            class="start-lobby-button"
+            [disabled]="!canHostStartGame"
+            (click)="startLanGame()"
+          >
+            {{ isStartingLobby ? 'Starting...' : 'Start Game' }}
+          </button>
+          <p class="lobby-hint" *ngIf="isHostPlayer && !allPlayersJoined">Waiting for every seat to join before the match can start.</p>
+          <p class="lobby-hint" *ngIf="!isHostPlayer">Waiting for the host to start the match.</p>
+          <p class="lobby-error" *ngIf="gameState.roomNotice">{{ gameState.roomNotice }}</p>
+          <p class="lobby-error" *ngIf="lobbyActionError">{{ lobbyActionError }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="gameStarted && gameState && gameState.phase === 'playing' && !gameEnded" class="game-area">
+      <div class="scoreboard-sidebar">
+        <h2>Players</h2>
+        <div *ngFor="let player of gameState.players" class="player-score-info">
+          <div class="player-name">
+            {{ player.name }}
+            <span *ngIf="player.id === playerId" class="badge">You</span>
+          </div>
+          <div class="player-score">
+            Cards: {{ getPlayerCardCount(player.id) }}
+          </div>
+          <div class="player-score" *ngIf="canShowPlayerScore(player.id)">
+            Score: {{ getPlayerHandScore(player.id) }}
+          </div>
+          <div class="player-score" *ngIf="!canShowPlayerScore(player.id)">
+            Score: Hidden
+          </div>
+        </div>
+      </div>
+
+      <div class="game-container">
+        <app-game-board
+          [gameState]="gameState"
+          [playerId]="playerId || ''"
+          [currentPlayerName]="currentPlayerName"
+          (gameUpdated)="onGameUpdated($event)"
+          (gameEnded)="onGameEnded()"
+        ></app-game-board>
+      </div>
+    </div>
+
+    <app-game-over
+      *ngIf="gameStarted && gameState && gameEnded"
+      [gameState]="gameState"
+      [isRestarting]="isRestartingGame"
+      [actionError]="gameOverActionError"
+      [playerId]="playerId"
+      (restart)="restartCurrentGame()"
+      (mainMenu)="closeCurrentGame()"
+    ></app-game-over>
+  </div>
+</div>

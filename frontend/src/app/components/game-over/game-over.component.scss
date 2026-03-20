@@ -1,0 +1,229 @@
+.game-over-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 14px;
+}
+
+.game-over-card {
+  background: linear-gradient(180deg, rgba(245, 238, 220, 0.98), rgba(229, 216, 182, 0.96));
+  border: 1px solid rgba(223, 190, 112, 0.45);
+  border-radius: 16px;
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.34);
+  padding: 36px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.winner-section {
+  margin-bottom: 24px;
+
+  .game-over-title {
+    font-size: 2rem;
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    letter-spacing: 0.05em;
+    color: #274f3f;
+    margin: 0 0 20px 0;
+  }
+
+  .winner {
+    background: linear-gradient(140deg, #1f5f49, #133d2f);
+    color: #efe6cc;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(223, 190, 112, 0.34);
+    margin-bottom: 14px;
+
+    .winner-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin: 0 0 10px 0;
+    }
+
+    .winner-name {
+      font-size: 1.7rem;
+      font-family: 'Cinzel', 'Times New Roman', serif;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+    }
+
+    .winner-score {
+      background: rgba(223, 190, 112, 0.2);
+      border: 1px solid rgba(223, 190, 112, 0.35);
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+  }
+
+  .dhumbal-caller {
+    font-size: 0.95rem;
+    color: #4f5a43;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.scores-section {
+  margin-bottom: 22px;
+  text-align: left;
+
+  h2 {
+    color: #2b4133;
+    font-size: 1.1rem;
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .scores-table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: rgba(255, 252, 243, 0.7);
+      border: 1px solid rgba(81, 105, 81, 0.25);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateX(3px);
+        background: rgba(255, 252, 243, 0.92);
+      }
+
+      &.winner {
+        background: linear-gradient(130deg, rgba(223, 190, 112, 0.24), rgba(217, 176, 91, 0.15));
+        border-color: rgba(176, 138, 65, 0.75);
+        font-weight: 700;
+
+        .score-player-name {
+          color: #443416;
+        }
+
+        .score-value {
+          color: #443416;
+          background: rgba(255, 247, 225, 0.9);
+          padding: 5px 10px;
+          border-radius: 4px;
+          border: 1px solid rgba(176, 138, 65, 0.4);
+          min-width: 40px;
+          text-align: center;
+        }
+      }
+
+      .score-player-name {
+        font-weight: 600;
+        color: #2f3f31;
+        flex: 1;
+      }
+
+      .score-value {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #245041;
+        min-width: 50px;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.action-error {
+  margin-bottom: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: rgba(242, 109, 109, 0.14);
+  border: 1px solid rgba(242, 109, 109, 0.4);
+  color: #7a2020;
+  font-weight: 600;
+}
+
+.room-notice {
+  margin-bottom: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: rgba(151, 46, 39, 0.14);
+  border: 1px solid rgba(151, 46, 39, 0.38);
+  color: #6d1f1f;
+  font-weight: 600;
+}
+
+.rematch-status {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(39, 79, 63, 0.1);
+  border: 1px solid rgba(39, 79, 63, 0.25);
+  color: #224638;
+  font-weight: 600;
+
+  p {
+    margin: 0;
+  }
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.restart-btn,
+.menu-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+}
+
+.menu-btn {
+  background: rgba(39, 79, 63, 0.12);
+  color: #1f3a2e;
+  border-color: rgba(39, 79, 63, 0.28);
+}
+
+@media (max-width: 600px) {
+  .game-over-card {
+    padding: 24px 18px;
+  }
+
+  .winner-section .game-over-title {
+    font-size: 1.5rem;
+  }
+
+  .winner {
+    padding: 16px !important;
+
+    .winner-name {
+      font-size: 1.3rem;
+    }
+  }
+
+  .scores-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .action-row {
+    grid-template-columns: 1fr;
+  }
+}

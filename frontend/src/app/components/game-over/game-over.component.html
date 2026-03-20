@@ -1,0 +1,55 @@
+<div class="game-over-container">
+  <div class="game-over-card">
+    <div class="winner-section">
+      <h1 class="game-over-title">Round Complete</h1>
+      <div class="winner" *ngIf="gameState.winner">
+        <p class="winner-label">Winner:</p>
+        <p class="winner-name">{{ gameState.winner.name }}</p>
+        <div
+          class="winner-score"
+          *ngIf="gameState.finalScores && gameState.winner"
+        >
+          Final Score: {{ finalScore }}
+        </div>
+      </div>
+      <p class="dhumbal-caller" *ngIf="gameState.dhumbalCalledBy">
+        {{ gameState.dhumbalCalledBy.name }} called "Dhumbal".
+      </p>
+    </div>
+
+    <div class="scores-section">
+      <h2>Final Scores</h2>
+      <div class="scores-table">
+        <div
+          class="score-row"
+          *ngFor="let player of gameState.players"
+          [class.winner]="player.id === gameState.winner?.id"
+        >
+          <div class="score-player-name">{{ player.name }}</div>
+          <div class="score-value">
+            {{ gameState.finalScores ? gameState.finalScores[player.id] : 0 }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="room-notice" *ngIf="gameState.roomNotice">
+      {{ gameState.roomNotice }}
+    </div>
+
+    <div class="rematch-status" *ngIf="isLanMode">
+      <p>{{ readyPlayerCount }}/{{ totalPlayers }} players ready</p>
+    </div>
+
+    <div class="action-error" *ngIf="actionError">{{ actionError }}</div>
+
+    <div class="action-row">
+      <button class="btn btn-primary restart-btn" (click)="onRestart()" [disabled]="rematchButtonDisabled">
+        {{ rematchButtonLabel }}
+      </button>
+      <button class="btn btn-secondary menu-btn" type="button" (click)="onMainMenu()" [disabled]="isRestarting">
+        Main Menu
+      </button>
+    </div>
+  </div>
+</div>

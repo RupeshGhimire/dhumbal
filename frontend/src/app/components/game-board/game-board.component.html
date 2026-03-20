@@ -1,0 +1,161 @@
+<div class="game-board">
+  <!-- Game Status -->
+  <div class="game-status">
+    <div class="status-info">
+      <div class="current-player">
+        <span class="label">Current Player:</span>
+        <span class="value">{{ currentPlayerName }}</span>
+      </div>
+      <div class="game-info">
+        <span class="label">Round:</span>
+        <span class="value">{{ gameState.roundNumber }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Game Area -->
+  <div class="game-main">
+    <div class="game-table" [class.table-drop-active]="(dragOverTable || isDraggingCards) && canSelectDiscard">
+      <!-- Players around the table (computed positions for 2–5 players) -->
+      <div
+        *ngFor="let player of gameState.players; let i = index"
+        class="player-position"
+        [ngStyle]="getPlayerPositionStyle(i)"
+        [class.current]="gameState.currentPlayerIndex === i"
+      >
+        <div class="player-icon"></div>
+        <div class="player-name">{{ player.name }}</div>
+        <div class="player-card-count" *ngIf="gameState.playerCardCounts?.[player.id] !== undefined || gameState.playerHands[player.id]">
+          {{ gameState.playerCardCounts?.[player.id] ?? (gameState.playerHands[player.id] || []).length }}
+        </div>
+      </div>
+
+      <!-- Drop Zone for Discarding Cards -->
+      <div
+        class="discard-drop-zone"
+        [class.drag-over]="(dragOverTable || isDraggingCards) && canSelectDiscard"
+        (dragover)="onTableDragOver($event)"
+        (dragleave)="onTableDragLeave($event)"
+        (drop)="onTableDrop($event)"
+        *ngIf="canSelectDiscard"
+      >
+        <span class="discard-zone-label">Discard Zone</span>
+      </div>
+
+      <!-- Stockpile and Discard Pile -->
+      <div class="card-piles">
+        <div class="pile-container stockpile-container">
+          <div class="pile-label">Stockpile</div>
+          <div 
+            class="pile stockpile"
+            [class.empty]="gameState.stockpileCount === 0"
+            [class.clickable]="canDraw && gameState.stockpileCount > 0"
+            (click)="canDraw && gameState.stockpileCount > 0 && onDrawCard('stockpile')"
+          >
+            <div class="card-back" *ngIf="gameState.stockpileCount > 0"></div>
+            <div class="empty-text" *ngIf="gameState.stockpileCount === 0">Empty</div>
+          </div>
+          <button
+            class="btn btn-primary btn-draw"
+            [disabled]="!canDraw || gameState.stockpileCount === 0 || isLoading"
+            (click)="onDrawCard('stockpile')"
+          >
+            Draw from Stockpile
+          </button>
+        </div>
+
+        <div class="pile-container discard-pile-container">
+          <div class="pile-label">Discard Pile</div>
+          <div 
+            class="pile discard-pile"
+            [class.clickable]="canDraw && gameState.discardPile && gameState.discardPile.length > 0"
+            [class.drag-over]="dragOverDiscard && canSelectDiscard"
+            (click)="canDraw && gameState.discardPile && gameState.discardPile.length > 0 && onDrawCard('discard')"
+            (dragover)="onDiscardPileDragOver($event)"
+            (dragleave)="onDiscardPileDragLeave($event)"
+            (drop)="onDiscardPileDrop($event)"
+          >
+            <ng-container *ngIf="gameState.discardPile && gameState.discardPile.length > 0">
+              <app-card
+                *ngFor="let card of (gameState.discardPile | slice:-10); let i = index"
+                [card]="card"
+                [clickable]="false"
+                [compact]="true"
+                class="scattered-card"
+                [ngStyle]="getDiscardCardStyle(i, gameState.discardPile.length)"
+              ></app-card>
+            </ng-container>
+            <div class="empty-text" *ngIf="!gameState.discardPile || gameState.discardPile.length === 0">No cards</div>
+          </div>
+          <button
+            class="btn btn-primary btn-draw"
+            [disabled]="!canDraw || !gameState.discardPile || gameState.discardPile.length === 0 || isLoading"
+            (click)="onDrawCard('discard')"
+          >
+            Draw from Discard
+          </button>
+        </div>
+      </div>
+
+      <!-- Player 2 (Bottom) is now handled by ngFor above -->
+    </div>
+  </div>
+
+  <!-- Current Player's Hand -->
+  <div *ngIf="displayedHandPlayerId" class="current-player-hand">
+    <div class="hand-header">
+      <h3>{{ displayedHandPlayerName }}'s Hand</h3>
+      <div class="hand-score">Score: {{ currentHandScore }}/{{ getDhumbalThreshold(gameState.players.length) }}</div>
+    </div>
+    <app-player-hand
+      [cards]="gameState.playerHands[displayedHandPlayerId]"
+      [drawnCard]="displayedHandPlayerId === gameState.players[gameState.currentPlayerIndex].id ? gameState.drawnCard : null"
+      [drawSource]="drawSource"
+      [selectedIndices]="canSelectDiscard ? selectedCardIndices : []"
+      [disabled]="isLoading"
+      [canSelect]="canSelectDiscard"
+      [turnPhase]="gameState.turnPhase"
+      (cardSelected)="onDiscardCard($event)"
+      (autoDiscard)="onAutoDiscard($event)"
+      (dragStateChange)="onHandDragStateChange($event)"
+    ></app-player-hand>
+    <div *ngIf="canSelectDiscard && selectedCardIndices.length > 0" class="discard-controls">
+      <button
+        class="btn btn-primary"
+        (click)="confirmDiscard()"
+        [disabled]="isLoading"
+      >
+        Discard Selected Cards
+      </button>
+      <button
+        class="btn btn-secondary"
+        (click)="selectedCardIndices = []"
+        [disabled]="isLoading"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="current-action-banner" [class.draw]="gameState.turnPhase === 'waiting_for_draw'" [class.complete]="gameState.turnPhase === 'turn_complete'">
+    {{ currentActionText }}
+  </div>
+
+  <div class="room-notice-banner" *ngIf="gameState.roomNotice">
+    {{ gameState.roomNotice }}
+  </div>
+
+  <!-- Game Controls -->
+  <app-game-controls
+    [gameState]="gameState"
+    [isCurrentPlayer]="isCurrentPlayer"
+    [canCallDhumbal]="canCallDhumbal"
+    [canEndTurn]="canEndTurn"
+    [showEndTurnButton]="!autoEndTurnEnabled"
+    [isLoading]="isLoading"
+    [error]="error"
+    (callDhumbal)="onCallDhumbal()"
+    (endTurn)="onEndTurn()"
+  ></app-game-controls>
+
+</div>

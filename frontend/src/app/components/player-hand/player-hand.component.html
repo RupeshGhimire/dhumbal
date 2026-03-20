@@ -1,0 +1,48 @@
+<div class="player-hand">
+  <div class="cards-container">
+    <div
+      *ngFor="let card of cards; let i = index"
+      class="card-wrapper"
+      [class.paired]="isPaired(i)"
+      [class.selected]="selectedIndices.includes(i)"
+      [class.clickable]="canSelect"
+      [class.drawn]="isCardDrawn(i) && drawSource === 'stockpile'"
+      [class.discarding]="discardingIndex === i"
+      [class.dragging]="draggingCardIndex === i"
+      [attr.draggable]="dragEnabled ? 'true' : null"
+      (click)="onCardClicked(i)"
+      (pointerup)="onCardPointerUp(i, $event)"
+      (dragstart)="onDragStarted(i, $event)"
+      (dragover)="onDragOver(i, $event)"
+      (drop)="onCardDropped(i, $event)"
+      (dragend)="onDragEnd()"
+    >
+      <app-card
+        [card]="card"
+        [clickable]="canSelect"
+        [selected]="selectedIndices.includes(i)"
+        [isDrawn]="isCardDrawn(i)"
+      ></app-card>
+    </div>
+  </div>
+
+  <!-- Pair UI -->
+  <div *ngIf="pairedCards.length === 2" class="pair-indicator">
+    <div class="pair-info">
+      ✓ Pair matched: {{ cards[pairedCards[0]].rank }}
+    </div>
+    <div class="pair-actions">
+      <button class="btn btn-primary pair-submit" (click)="submitPair()">
+        Discard Pair
+      </button>
+      <button class="btn btn-secondary" (click)="cancelPair()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Single card instruction -->
+  <div *ngIf="canSelect && pairedCards.length === 0" class="hint-text">
+    <small>Click to select up to 4 cards (same-rank sets or same-suit runs), or drag two matching cards to pair quickly.</small>
+  </div>
+</div>

@@ -1,0 +1,172 @@
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  background: rgba(7, 24, 19, 0.56);
+  border-radius: 8px;
+  border: 1px solid rgba(223, 190, 112, 0.22);
+}
+
+.error-message {
+  background: rgba(242, 109, 109, 0.2);
+  color: #ffc3c3;
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(242, 109, 109, 0.45);
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  font-size: 0.84rem;
+}
+
+.controls-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .btn {
+    width: min(100%, 420px);
+    min-height: 48px;
+    border-radius: 12px;
+    font-size: 0.96rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+.draw-controls {
+  position: relative;
+
+  .draw-options {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #122c23;
+    border: 1px solid rgba(223, 190, 112, 0.3);
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    min-width: 180px;
+    z-index: 10;
+    margin-top: 5px;
+
+    .btn {
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+.game-hint {
+  background: rgba(16, 44, 35, 0.82);
+  color: #d7ccab;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border-left: 3px solid rgba(223, 190, 112, 0.6);
+  width: 100%;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+  }
+}
+
+.waiting-message {
+  background: rgba(223, 190, 112, 0.16);
+  color: #ecd7a5;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(223, 190, 112, 0.32);
+  text-align: center;
+  font-weight: 500;
+
+  p {
+    margin: 0;
+  }
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e6d2a0;
+  font-weight: 600;
+  font-size: 0.84rem;
+
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e6d2a0;
+    border-top-color: transparent;
+
+    @media (max-width: 480px) {
+      .game-hint {
+        padding: 8px 10px;
+
+        p {
+          font-size: 0.76rem;
+        }
+      }
+
+      .waiting-message {
+        padding: 8px 10px;
+        font-size: 0.84rem;
+      }
+
+      .button-group .btn {
+        min-height: 44px;
+        font-size: 0.88rem;
+      }
+    }
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .draw-controls .draw-options {
+    position: static;
+    transform: none;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}

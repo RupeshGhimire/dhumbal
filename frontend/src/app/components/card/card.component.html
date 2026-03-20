@@ -1,0 +1,33 @@
+<div
+  class="card"
+  [class.selected]="selected"
+  [class.drawn]="isDrawn"
+  [class.clickable]="clickable"
+  [class.compact]="compact"
+>
+  <div class="selected-badge" *ngIf="selected">Selected</div>
+
+  <div class="card-corner top-left" [class.red]="getSuitColor() === 'red'">
+    <span class="rank">{{ card.rank }}</span>
+    <span class="suit">{{ getSuitSymbol() }}</span>
+  </div>
+
+  <div class="card-inner" *ngIf="!isFaceCard()">
+    <div class="card-rank" [class.red]="getSuitColor() === 'red'">
+      {{ card.rank }}
+    </div>
+    <div class="card-suit" [class.red]="getSuitColor() === 'red'">
+      {{ getSuitSymbol() }}
+    </div>
+  </div>
+
+  <div class="card-face" *ngIf="isFaceCard()">
+    <div class="face-symbol" [class.red]="getSuitColor() === 'red'">{{ getFaceSymbol() }}</div>
+    <div class="face-suit" [class.red]="getSuitColor() === 'red'">{{ getSuitSymbol() }}</div>
+  </div>
+
+  <div class="card-corner bottom-right" [class.red]="getSuitColor() === 'red'">
+    <span class="rank">{{ card.rank }}</span>
+    <span class="suit">{{ getSuitSymbol() }}</span>
+  </div>
+</div>

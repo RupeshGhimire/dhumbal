@@ -1,0 +1,35 @@
+<div class="game-controls">
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="isCurrentPlayer" class="controls-container">
+    <div class="button-group">
+      <button
+        class="btn btn-secondary"
+        [disabled]="!canCallDhumbal || isLoading"
+        (click)="onCallDhumbal()"
+      >
+        Call Dhumbal
+      </button>
+
+      <button
+        class="btn btn-success"
+        [disabled]="!canEndTurn || isLoading"
+        (click)="onEndTurn()"
+        *ngIf="showEndTurnButton && gameState.turnPhase === 'turn_complete'"
+      >
+        End Turn
+      </button>
+    </div>
+
+  </div>
+
+  <div *ngIf="!isCurrentPlayer" class="waiting-message">
+    <p>Waiting for {{ gameState.players[gameState.currentPlayerIndex].name }} to play...</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <span class="spinner"></span> Processing...
+  </div>
+</div>

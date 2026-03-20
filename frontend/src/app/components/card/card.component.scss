@@ -1,0 +1,277 @@
+.card {
+  width: 84px;
+  height: 118px;
+  background:
+    linear-gradient(180deg, #ffffff, #f5efe4 68%, #ede3d1);
+  border: 1px solid #4d3a20;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 5px 12px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, filter 0.12s ease;
+  cursor: default;
+  touch-action: manipulation;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 10px 16px rgba(0, 0, 0, 0.34);
+    }
+  }
+
+  &.selected {
+    border-color: #f3d18b;
+    box-shadow: 0 0 0 3px rgba(255, 221, 128, 0.68), 0 10px 18px rgba(0, 0, 0, 0.32);
+    transform: translateY(-5px);
+    filter: brightness(1.08) saturate(1.06);
+  }
+
+  &.drawn {
+    border-color: #63cc9b;
+    box-shadow: 0 0 0 3px rgba(99, 204, 155, 0.3), 0 10px 18px rgba(0, 0, 0, 0.33);
+  }
+
+  &.compact {
+    width: 58px;
+    height: 82px;
+
+    .card-rank {
+      font-size: 0.78rem;
+    }
+
+    .card-suit {
+      font-size: 1.1rem;
+    }
+
+    .card-face {
+      .face-symbol {
+        font-size: 1.55rem;
+      }
+
+      .face-suit {
+        font-size: 0.7rem;
+      }
+    }
+
+    .card-corner {
+      .rank {
+        font-size: 0.52rem;
+      }
+
+      .suit {
+        font-size: 0.46rem;
+      }
+
+      &.top-left {
+        top: 3px;
+        left: 4px;
+      }
+
+      &.bottom-right {
+        right: 4px;
+        bottom: 3px;
+      }
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(77, 58, 32, 0.18);
+    border-radius: 7px;
+    pointer-events: none;
+  }
+}
+
+.selected-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 999px;
+  color: #3c2a08;
+  background: linear-gradient(180deg, #f4d994, #ddb86a);
+  border: 1px solid rgba(106, 76, 26, 0.45);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+.card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.card-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  .face-symbol {
+    font-size: 2.6rem;
+    line-height: 1;
+    color: #201711;
+
+    &.red {
+      color: #b62e2e;
+    }
+  }
+
+  .face-suit {
+    font-size: 1rem;
+    line-height: 1;
+    color: #201711;
+
+    &.red {
+      color: #b62e2e;
+    }
+  }
+}
+
+.card-rank {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #201711;
+
+  &.red {
+    color: #b62e2e;
+  }
+}
+
+.card-suit {
+  font-size: 1.75rem;
+  line-height: 1;
+  color: #201711;
+
+  &.red {
+    color: #b62e2e;
+  }
+}
+
+.card-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  color: #201711;
+
+  .rank {
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .suit {
+    font-size: 0.62rem;
+    margin-top: 1px;
+  }
+
+  &.red {
+    color: #b62e2e;
+  }
+
+  &.top-left {
+    top: 6px;
+    left: 6px;
+  }
+
+  &.bottom-right {
+    right: 6px;
+    bottom: 6px;
+    transform: rotate(180deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 74px;
+    height: 104px;
+  }
+
+  .card-rank {
+    font-size: 0.95rem;
+  }
+
+  .card-suit {
+    font-size: 1.5rem;
+  }
+
+  .card-corner {
+    .rank {
+      font-size: 0.62rem;
+    }
+
+    .suit {
+      font-size: 0.54rem;
+
+    @media (max-width: 480px) {
+      .card {
+        width: 62px;
+        height: 87px;
+      }
+
+      .card-rank {
+        font-size: 0.82rem;
+      }
+
+      .card-suit {
+        font-size: 1.25rem;
+      }
+
+      .card-face {
+        .face-symbol {
+          font-size: 1.9rem;
+        }
+
+        .face-suit {
+          font-size: 0.8rem;
+        }
+      }
+
+      .card-corner {
+        .rank {
+          font-size: 0.52rem;
+        }
+
+        .suit {
+          font-size: 0.44rem;
+        }
+
+        &.top-left {
+          top: 3px;
+          left: 4px;
+        }
+
+        &.bottom-right {
+          right: 4px;
+          bottom: 3px;
+        }
+      }
+    }
+    }
+  }
+
+  .selected-badge {
+    font-size: 0.46rem;
+    top: 4px;
+    right: 4px;
+    padding: 2px 4px;
+  }
+}

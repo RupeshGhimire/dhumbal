@@ -1,0 +1,158 @@
+.player-hand {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cards-container {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+  position: relative;
+}
+
+.card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+  cursor: grab;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  app-card {
+    pointer-events: none;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.clickable {
+    &:hover {
+      transform: scale(1.04) translateY(-6px);
+      box-shadow: 0 11px 22px rgba(0, 0, 0, 0.34);
+    }
+  }
+
+  &.paired {
+    transform: scale(1.08) translateY(-9px);
+    box-shadow: 0 0 0 3px rgba(99, 204, 155, 0.7), 0 0 16px rgba(99, 204, 155, 0.45);
+    border: 2px solid #8be7ba;
+    border-radius: 10px;
+    filter: brightness(1.1) saturate(1.08);
+  }
+
+  &.selected {
+    transform: scale(1.1) translateY(-10px);
+    box-shadow: 0 0 0 3px rgba(255, 220, 130, 0.76), 0 0 18px rgba(255, 214, 105, 0.46);
+    border: 2px solid rgba(255, 221, 138, 0.82);
+    border-radius: 10px;
+    filter: brightness(1.09) saturate(1.08);
+    z-index: 10;
+
+    &:hover {
+      transform: scale(1.1) translateY(-10px);
+      box-shadow: 0 0 0 3px rgba(255, 220, 130, 0.76), 0 0 18px rgba(255, 214, 105, 0.46);
+    }
+  }
+
+  &.dragging {
+    opacity: 0.86;
+    transform: scale(1.05);
+    box-shadow: 0 0 22px rgba(223, 190, 112, 0.85);
+  }
+
+  &.drawn {
+    animation: move-in 0.4s ease forwards;
+  }
+
+  &.discarding {
+    animation: move-out 0.4s ease forwards;
+  }
+}
+
+.pair-indicator {
+  background: rgba(99, 204, 155, 0.16);
+  border: 1px solid rgba(99, 204, 155, 0.52);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 8px;
+
+  .pair-info {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #bfe9d1;
+  }
+
+  .pair-actions {
+    display: flex;
+    gap: 4px;
+
+    button {
+      padding: 3px 8px;
+      font-size: 0.78rem;
+    }
+  }
+}
+
+.hint-text {
+  text-align: center;
+  color: #c9bc98;
+  font-size: 0.78rem;
+  padding: 2px;
+  margin: 0 8px;
+  letter-spacing: 0.02em;
+}
+
+@keyframes move-in {
+  from {
+    transform: translateY(-30px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes move-out {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+
+  @media (max-width: 480px) {
+    .cards-container {
+      gap: 3px;
+      padding: 4px;
+      flex-wrap: nowrap;
+      width: max-content;
+      min-width: 100%;
+      margin: 0 auto;
+    }
+
+    .hint-text {
+      font-size: 0.72rem;
+      padding: 1px;
+    }
+  }
+  .cards-container {
+    gap: 4px;
+  }
+}

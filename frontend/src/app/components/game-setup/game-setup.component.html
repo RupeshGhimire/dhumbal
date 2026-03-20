@@ -1,0 +1,287 @@
+<div class="setup-container">
+  <div class="setup-header">
+    <div>
+      <p class="eyebrow">Card Table Lobby</p>
+      <h1>Dhumbal</h1>
+      <p class="subtitle">Choose your table, invite players, and start the next round with confidence.</p>
+    </div>
+  </div>
+
+  <div class="menu-shell">
+    <div class="menu-nav">
+      <button
+        type="button"
+        class="menu-button"
+        [class.active]="menuSection === 'play'"
+        (click)="setMenuSection('play')"
+      >
+        Play
+      </button>
+      <button
+        type="button"
+        class="menu-button"
+        [class.active]="menuSection === 'lan-guide'"
+        (click)="setMenuSection('lan-guide')"
+      >
+        LAN Guide
+      </button>
+      <button
+        type="button"
+        class="menu-button"
+        [class.active]="menuSection === 'options'"
+        (click)="setMenuSection('options')"
+      >
+        Options
+      </button>
+    </div>
+
+    <div class="menu-panel" *ngIf="menuSection === 'play'">
+      <div class="mode-switcher">
+        <button
+          type="button"
+          class="mode-button"
+          [class.active]="setupMode === 'single'"
+          (click)="setSetupMode('single')"
+        >
+          Single Device
+        </button>
+        <button
+          type="button"
+          class="mode-button"
+          [class.active]="setupMode === 'lan-host'"
+          (click)="setSetupMode('lan-host')"
+        >
+          Host LAN Game
+        </button>
+        <button
+          type="button"
+          class="mode-button"
+          [class.active]="setupMode === 'lan-join'"
+          (click)="setSetupMode('lan-join')"
+        >
+          Join LAN Game
+        </button>
+      </div>
+
+      <div class="setup-form">
+        <div class="helper-card accent-card" *ngIf="setupMode === 'single'">
+          <h3>Pass-and-play setup</h3>
+          <p>Use one device, mix human and bot seats, and hand the screen to the active player each turn.</p>
+        </div>
+
+        <div class="helper-card accent-card" *ngIf="setupMode === 'lan-host'">
+          <h3>Host on your network</h3>
+          <p>Create a lobby on the host machine, wait for every seat to join, then start the match from the host screen.</p>
+        </div>
+
+        <div class="helper-card accent-card" *ngIf="setupMode === 'lan-join'">
+          <h3>Join an existing lobby</h3>
+          <p>Connect to the host's URL, enter the shared six-character code, and claim the open seat with your display name.</p>
+        </div>
+
+        <div class="form-group" *ngIf="setupMode === 'single'">
+          <label for="playerCount">Number of Players</label>
+          <select id="playerCount" [(ngModel)]="playerCount" class="form-control">
+            <option [ngValue]="2">2 Players</option>
+          </select>
+        </div>
+
+        <div class="players-config" *ngIf="setupMode === 'single'">
+          <h3>Player Configuration</h3>
+          <div *ngFor="let mode of playerModes; let i = index" class="player-config">
+            <span class="player-label">Player {{ i + 1 }}</span>
+            <div class="mode-buttons">
+              <button
+                type="button"
+                class="mode-toggle"
+                [class.active]="playerModes[i] === 'human'"
+                (click)="setPlayerMode(i, 'human')"
+              >
+                Human
+              </button>
+              <button
+                type="button"
+                class="mode-toggle"
+                [class.active]="playerModes[i] === 'bot'"
+                (click)="setPlayerMode(i, 'bot')"
+              >
+                Bot
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="setupMode === 'lan-host'">
+          <label for="lanHostName">Your Display Name</label>
+          <input
+            id="lanHostName"
+            type="text"
+            class="form-control"
+            [(ngModel)]="lanDisplayName"
+            placeholder="Enter your name"
+            maxlength="24"
+          />
+        </div>
+
+        <div class="form-group" *ngIf="setupMode === 'lan-host'">
+          <label for="lanPlayerCount">Lobby Size</label>
+          <select id="lanPlayerCount" [(ngModel)]="playerCount" class="form-control">
+            <option [ngValue]="2">2 Players</option>
+            <option [ngValue]="3">3 Players</option>
+            <option [ngValue]="4">4 Players</option>
+            <option [ngValue]="5">5 Players</option>
+          </select>
+        </div>
+
+        <div class="play-hint" *ngIf="setupMode === 'lan-host'">
+          <span class="hint-label">Host note</span>
+          <p>Run the backend and the LAN frontend on this computer before creating the lobby. Full steps are in LAN Guide.</p>
+        </div>
+
+        <div class="form-group" *ngIf="setupMode === 'lan-join'">
+          <label for="lanGameCode">Game Code</label>
+          <input
+            id="lanGameCode"
+            type="text"
+            class="form-control uppercase"
+            [ngModel]="lanGameCode"
+            (ngModelChange)="onLobbyCodeChanged($event)"
+            placeholder="ABC123"
+            maxlength="6"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group" *ngIf="setupMode === 'lan-join'">
+          <label for="lanJoinName">Your Display Name</label>
+          <input
+            id="lanJoinName"
+            type="text"
+            class="form-control"
+            [(ngModel)]="lanDisplayName"
+            placeholder="Enter your name"
+            maxlength="24"
+          />
+        </div>
+
+        <div class="play-hint" *ngIf="setupMode === 'lan-join'">
+          <span class="hint-label">Joiner note</span>
+          <p>Open the host machine's frontend URL in your browser first, then pick a room below or enter the short code manually.</p>
+        </div>
+
+        <div class="lan-room-list" *ngIf="setupMode === 'lan-join'">
+          <div class="room-list-header">
+            <h3>Available Rooms</h3>
+            <button type="button" class="mode-toggle" (click)="refreshLanLobbies()" [disabled]="isLoadingLobbies">
+              {{ isLoadingLobbies ? 'Refreshing...' : 'Refresh' }}
+            </button>
+          </div>
+
+          <p class="room-list-empty" *ngIf="!isLoadingLobbies && availableLobbies.length === 0">
+            No open room found on this server yet.
+          </p>
+
+          <div class="room-items" *ngIf="availableLobbies.length > 0">
+            <button
+              type="button"
+              class="room-item"
+              *ngFor="let lobby of availableLobbies"
+              (click)="useLobbyCode(lobby.lobbyCode)"
+              [class.selected]="lanGameCode === (lobby.lobbyCode || '')"
+            >
+              <div class="room-title-row">
+                <strong>{{ lobby.roomName }}</strong>
+                <span class="room-code">{{ lobby.lobbyCode }}</span>
+              </div>
+              <div class="room-meta">{{ lobby.joinedCount }}/{{ lobby.playerCount }} players joined</div>
+            </button>
+          </div>
+        </div>
+
+        <button class="start-button" [disabled]="isLoading || !isFormValid" (click)="startGame()">
+          {{ startButtonLabel }}
+        </button>
+
+        <div *ngIf="error" class="error-message">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-panel" *ngIf="menuSection === 'lan-guide'">
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>Host Setup</h3>
+          <ol>
+            <li>On the host machine, start the backend with npm run dev inside backend.</li>
+            <li>Start the frontend with npm run start:lan inside frontend.</li>
+            <li>Open the host machine address shown by Angular, then choose Host LAN Game.</li>
+            <li>Create the lobby, then share both the host URL and the six-character lobby code with every player.</li>
+          </ol>
+        </div>
+
+        <div class="guide-card">
+          <h3>Player Join</h3>
+          <ol>
+            <li>Connect to the same network as the host.</li>
+            <li>Open the host's frontend URL in a browser.</li>
+            <li>Select Join LAN Game.</li>
+            <li>Enter your display name and the game code from the host.</li>
+          </ol>
+        </div>
+
+        <div class="guide-card wide-card">
+          <h3>What to expect</h3>
+          <ul>
+            <li>LAN games are human-only. Bots remain available in Single Device mode.</li>
+            <li>Your own hand stays visible to you, but the other player's cards stay hidden.</li>
+            <li>If hosting fails, the backend is usually not running yet or the frontend was started without LAN mode.</li>
+            <li>If joining fails, re-check the host URL, game code, and that the host machine firewall allows the chosen ports.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-panel" *ngIf="menuSection === 'options'">
+      <div class="options-card">
+        <div class="option-row">
+          <div>
+            <h3>Table Audio</h3>
+            <p>Sound effects play for draws, discards, turn passes, and round transitions.</p>
+          </div>
+          <button type="button" class="mode-toggle" [class.active]="soundEnabled" (click)="toggleSound()">
+            {{ soundEnabled ? 'Sound On' : 'Sound Off' }}
+          </button>
+        </div>
+
+        <div class="option-row">
+          <div>
+            <h3>Auto End Turn</h3>
+            <p>When enabled, the turn passes automatically right after your draw step completes.</p>
+          </div>
+          <button type="button" class="mode-toggle" [class.active]="autoEndTurnEnabled" (click)="toggleAutoEndTurn()">
+            {{ autoEndTurnEnabled ? 'Auto On' : 'Auto Off' }}
+          </button>
+        </div>
+
+        <div class="volume-control" [class.disabled]="!soundEnabled">
+          <label for="menuVolume">Volume</label>
+          <input
+            id="menuVolume"
+            type="range"
+            min="0"
+            max="100"
+            [value]="soundVolumePercent"
+            [disabled]="!soundEnabled"
+            (input)="onVolumeChanged($event)"
+          />
+          <span>{{ soundVolumePercent }}%</span>
+        </div>
+
+        <div class="options-note">
+          <p>The output curve is boosted, so 100% now drives a much stronger signal than the previous build.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
